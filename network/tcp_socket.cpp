@@ -8,9 +8,7 @@ using namespace std;
 TCPSocket::TCPSocket() : sockfd(-1) {}
 
 TCPSocket::~TCPSocket() {
-    if (sockfd != -1) {
-        close(sockfd);
-    }
+    if (sockfd != -1) close(sockfd);
 }
 
 bool TCPSocket::connect(const string& ip, int port) {
@@ -18,12 +16,11 @@ bool TCPSocket::connect(const string& ip, int port) {
     if (sockfd == -1) return false;
 
     sockaddr_in addr;
-    
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    
+
     if (inet_pton(AF_INET, ip.c_str(), &addr.sin_addr) <= 0) return false;
-    
+
     return ::connect(sockfd, (sockaddr*)&addr, sizeof(addr)) == 0;
 }
 
@@ -34,13 +31,13 @@ void TCPSocket::send(const string& data) {
 }
 
 string TCPSocket::receive() {
-    if (sockfd == -1) return "";
-    
-    char buffer[4096];
-    int bytes = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
-    if (bytes > 0) {
-        buffer[bytes] = '\0';
-        return string(buffer);
+    if (sockfd != -1) {
+        char buffer[4096];
+        int bytes = ::recv(sockfd, buffer, sizeof(buffer) - 1, 0);
+        if (bytes > 0) {
+            buffer[bytes] = '\0';
+            return string(buffer);
+        }
     }
     return "";
 }
