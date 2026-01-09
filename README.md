@@ -61,5 +61,65 @@ compile
 g++ *.cpp -lssl -lcrypto
 ```
 
+# TODOs
+CheckList
+1. HTTP response parsing
+2. Multi-read receive loop
+3. Redirect handling
+4. HTML text parser
+5. Certificate validation
+6. Cache
 
-# [TODO]
+# --> Done
+## 1. [TODO] Proper HTTP Response Parsing -> DONE
+
+## 2. [TODO] Handle Redirects (3xx) -> DONE
+
+## 3. [TODO] Error Pages -> DONE
+Instead of crashing:
+  DNS error page
+  TLS error page
+  HTTP error page
+# <-- Done
+
+
+# --> start
+## 1. [TODO] Read Loop (Critical Bug)
+You only call recv() / SSL_read() once.
+Real servers:
+Send data in chunks
+Large HTML = many reads
+
+
+## 2. [TODO] Certificate Validation
+You need:
+  Load CA store
+  Verify certificate chain
+  Match hostname
+
+## 3. [TODO] HTTP Keep-Alive
+Reuse TCP/TLS connections:
+Connection: keep-alive
+
+## 4. [TODO] Caching
+DNS cache
+HTTP cache
+Respect Cache-Control
+# <-- end
+
+# --> start
+## 1. [TODO] Simple UI
+# <-- end
+
+
+
+Recommended C++ Engines for Low-End Devices
+LiteHTML (Extreme Lightweight)
+
+    What it is: A pure C++ HTML/CSS rendering engine with zero dependencies. It doesn't even draw to the screen; it just tells you where things should be.
+
+    Pros: Tiny footprint, very fast.
+
+    Cons: No built-in JavaScript. You would need to pair it with a small JS engine like QuickJS or Duktape.
+
+    Networking: You have 100% manual control. It only knows about data you give it.

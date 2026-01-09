@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <openssl/err.h>
 
 using namespace std;
 
@@ -33,10 +34,15 @@ bool TLSSocket::connect(const string& ip, int port, const string& hostname) {
 
     ssl = SSL_new(ctx);
     SSL_set_fd(ssl, sockfd);
-    
     SSL_set_tlsext_host_name(ssl, hostname.c_str());
 
-    return SSL_connect(ssl) == 1;
+    int result = SSL_connect(ssl);
+    if(result != 1){
+        ERR_print_errors_fp(stderr);
+        return false;
+    }
+
+    return true;
 }
 
 void TLSSocket::send(const string& data) {
