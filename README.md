@@ -71,11 +71,11 @@ CheckList
 6. Cache
 
 # --> Done
-## 1. [TODO] Proper HTTP Response Parsing -> DONE
+## 1. Proper HTTP Response Parsing [DONE]
 
-## 2. [TODO] Handle Redirects (3xx) -> DONE
+## 2. Handle Redirects (3xx) [DONE]
 
-## 3. [TODO] Error Pages -> DONE
+## 3. Error Pages [DONE]
 Instead of crashing:
   DNS error page
   TLS error page
@@ -83,25 +83,52 @@ Instead of crashing:
 # <-- Done
 
 
-# --> start
-## 1. [TODO] Read Loop (Critical Bug)
+# --> Done
+## 1. [TODO] Read Loop (Critical Bug) [DONE]
 You only call recv() / SSL_read() once.
 Real servers:
 Send data in chunks
 Large HTML = many reads
 
+Real servers:
+  Stream data
+  Split responses across many TCP packets
+  Use chunked transfer encoding
+  Close connection only after full response
 
-## 2. [TODO] Certificate Validation
+Read until the server closes the connection OR no more data is available
+```
+Connection: close
+```
+
+## 2. [TODO] HTTP Keep-Alive [DONE]
+Reuse TCP/TLS connections:
+Connection: keep-alive
+
+With Keep-Alive
+```
+Connection: keep-alive
+```
+
+
+
+# <-- Done
+
+# --> start
+refector and understand all code pieces
+# <-- end
+
+# --> start
+## 3. [TODO] Certificate Validation
 You need:
   Load CA store
   Verify certificate chain
   Match hostname
+# <-- end
 
-## 3. [TODO] HTTP Keep-Alive
-Reuse TCP/TLS connections:
-Connection: keep-alive
 
-## 4. [TODO] Caching
+# --> start
+## 1. [TODO] Caching
 DNS cache
 HTTP cache
 Respect Cache-Control

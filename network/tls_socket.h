@@ -1,15 +1,19 @@
 #pragma once
+#include "socket.h"
 #include <string>
 #include <openssl/ssl.h>
 
-class TLSSocket {
+class TLSSocket : public Socket {
 public:
     TLSSocket();
-    ~TLSSocket();
+    ~TLSSocket() override;
 
+    bool connect(const std::string& ip, int port) override;
     bool connect(const std::string& ip, int port, const std::string& hostname);
-    void send(const std::string& data);
-    std::string receive();
+    void send(const std::string& data) override;
+    int read(char* buffer, size_t size) override;
+    void close_socket() override;
+    bool is_connected() const override;
 
 private:
     int sockfd;

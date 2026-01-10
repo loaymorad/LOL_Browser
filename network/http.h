@@ -1,6 +1,7 @@
 #pragma once
 #include "url.h"
-#include "tcp_socket.h"
+#include "socket.h"
+#include "connection_pool.h"
 #include <string>
 #include <unordered_map>
 
@@ -23,5 +24,9 @@ struct HttpResponse {
 
 class HTTPClient {
 public:
+    HTTPClient(ConnectionPool& pool);
     HttpResponse get(const URL& url, const std::string& ip);
+
+private:
+    ConnectionPool& pool;
 };

@@ -8,10 +8,12 @@ using namespace std;
 TCPSocket::TCPSocket() : sockfd(-1) {}
 
 TCPSocket::~TCPSocket() {
-    if (sockfd != -1) close(sockfd);
+    close_socket();
 }
 
 bool TCPSocket::connect(const string& ip, int port) {
+    if (sockfd != -1) close_socket();
+
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) return false;
 
@@ -30,14 +32,18 @@ void TCPSocket::send(const string& data) {
     }
 }
 
-string TCPSocket::receive() {
+int TCPSocket::read(char* buffer, size_t size) {
+    if (sockfd == -1) return -1;
+    return ::recv(sockfd, buffer, size, 0);
+}
+
+void TCPSocket::close_socket() {
     if (sockfd != -1) {
-        char buffer[4096];
-        int bytes = ::recv(sockfd, buffer, sizeof(buffer) - 1, 0);
-        if (bytes > 0) {
-            buffer[bytes] = '\0';
-            return string(buffer);
-        }
+        close(sockfd);
+        sockfd = -1;
     }
-    return "";
+}
+
+bool TCPSocket::is_connected() const {
+    return sockfd != -1;
 }

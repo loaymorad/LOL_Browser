@@ -11,6 +11,7 @@ SRCS = main.cpp \
        network/tls_socket.cpp \
        network/url.cpp \
        network/error_page.cpp \
+       network/connection_pool.cpp \
        render/text_renderer.cpp \
        ui/cli.cpp
 

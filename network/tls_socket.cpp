@@ -15,12 +15,17 @@ TLSSocket::TLSSocket() : sockfd(-1), ctx(nullptr), ssl(nullptr) {
 }
 
 TLSSocket::~TLSSocket() {
-   if(ssl) SSL_free(ssl);
+   close_socket();
    if(ctx) SSL_CTX_free(ctx);
-   if(sockfd != -1) close(sockfd);
+}
+
+bool TLSSocket::connect(const string& ip, int port) {
+    return connect(ip, port, "");
 }
 
 bool TLSSocket::connect(const string& ip, int port, const string& hostname) {
+    if (sockfd != -1) close_socket();
+
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) return false;
 
@@ -34,7 +39,9 @@ bool TLSSocket::connect(const string& ip, int port, const string& hostname) {
 
     ssl = SSL_new(ctx);
     SSL_set_fd(ssl, sockfd);
-    SSL_set_tlsext_host_name(ssl, hostname.c_str());
+    if (!hostname.empty()) {
+        SSL_set_tlsext_host_name(ssl, hostname.c_str());
+    }
 
     int result = SSL_connect(ssl);
     if(result != 1){
@@ -46,24 +53,27 @@ bool TLSSocket::connect(const string& ip, int port, const string& hostname) {
 }
 
 void TLSSocket::send(const string& data) {
-    if (ssl) {
-        SSL_write(ssl, data.c_str(), data.size());
+    if (!ssl) return;
+    SSL_write(ssl, data.c_str(), data.size());
+}
+
+int TLSSocket::read(char* buffer, size_t size) {
+    if (!ssl) return -1;
+    return SSL_read(ssl, buffer, size);
+}
+
+void TLSSocket::close_socket() {
+    if(ssl) {
+        SSL_shutdown(ssl);
+        SSL_free(ssl);
+        ssl = nullptr;
+    }
+    if(sockfd != -1) {
+        close(sockfd);
+        sockfd = -1;
     }
 }
 
-string TLSSocket::receive() {
-    string full_response;
-    if (ssl) {
-        char buffer[4096];
-        while (true) {
-            int bytes = SSL_read(ssl, buffer, sizeof(buffer) - 1);
-            if (bytes > 0) {
-                buffer[bytes] = '\0';
-                full_response.append(buffer, bytes);
-            } else {
-                break;
-            }
-        }
-    }
-    return full_response;
+bool TLSSocket::is_connected() const {
+    return ssl != nullptr;
 }

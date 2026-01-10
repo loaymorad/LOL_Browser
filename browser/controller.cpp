@@ -24,6 +24,8 @@ input: http://www.vulnweb.com
 
 constexpr int MAX_REDIRECTS = 5;
 
+BrowserController::BrowserController() : http(pool) {}
+
 void BrowserController::navigate(string& raw_url) {
     TextRenderer renderer;
     string current_url = raw_url;
@@ -31,7 +33,6 @@ void BrowserController::navigate(string& raw_url) {
     for(int i = 0; i < MAX_REDIRECTS; i++) {
         URL url(current_url);
         DNSResolver dns;
-        HTTPClient http;
         
         string ip = dns.resolve(url.host());
 
