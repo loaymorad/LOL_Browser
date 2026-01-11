@@ -26,16 +26,8 @@ bool TLSSocket::connect(const string& ip, int port) {
 bool TLSSocket::connect(const string& ip, int port, const string& hostname) {
     if (sockfd != -1) close_socket();
 
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sockfd = create_tcp_socket(ip, port);
     if (sockfd == -1) return false;
-
-    sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
-    
-    if (inet_pton(AF_INET, ip.c_str(), &addr.sin_addr) <= 0) return false;
-    
-    if (::connect(sockfd, (sockaddr*)&addr, sizeof(addr)) != 0) return false;
 
     ssl = SSL_new(ctx);
     SSL_set_fd(ssl, sockfd);

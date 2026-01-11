@@ -1,7 +1,7 @@
 #pragma once
 #include "url.h"
-#include "socket.h"
-#include "connection_pool.h"
+#include "../sockets/socket.h"
+#include "../sockets/connection_pool.h"
 #include <string>
 #include <unordered_map>
 
@@ -29,4 +29,7 @@ public:
 
 private:
     ConnectionPool& pool;
+    void send_request(Socket* socket, const URL& url);
+    HttpResponse read_response_head(Socket* socket);
+    std::string read_body(Socket* socket, const std::unordered_map<std::string, std::string>& headers, const std::string& initial_body_part);
 };

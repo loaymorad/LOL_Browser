@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include "../network/connection_pool.h"
-#include "../network/http.h"
+#include "../network/sockets/connection_pool.h"
+#include "../network/http/http.h"
 
 class BrowserController {
 public:

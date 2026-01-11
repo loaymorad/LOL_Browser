@@ -1,9 +1,9 @@
 #include "controller.h"
-#include "../network/url.h"
-#include "../network/dns.h"
-#include "../network/http.h"
+#include "../network/http/url.h"
+#include "../network/dns/dns.h"
+#include "../network/http/http.h"
 #include "../render/text_renderer.h"
-#include "../network/error_page.h"
+#include "error_page.h"
 #include <iostream>
 
 using namespace std;
@@ -35,7 +35,6 @@ void BrowserController::navigate(string& raw_url) {
         DNSResolver dns;
         
         string ip = dns.resolve(url.host());
-
         if (ip.empty()) {
             renderer.render(ErrorPage::dns_error(url.host()));
             return;
@@ -48,20 +47,17 @@ void BrowserController::navigate(string& raw_url) {
             return;
         }
 
-        // Redirect handling
+        // Handle Redirects
         if (response.status >= 300 && response.status < 400) {
             auto location = response.headers.find("Location");
             if(location != response.headers.end()){
                 current_url = location->second;
-                continue; // follow redirect
-            }else {
-                renderer.render(ErrorPage::http_error(response.status));
-                return;
+                continue;
             }
         }
 
-        // HTTP Error handling
-        if (response.error != NetworkError::NONE) {
+        // Handle HTTP Errors
+        if (response.error != NetworkError::NONE || response.status >= 400) {
             renderer.render(ErrorPage::http_error(response.status));
             return;
         }

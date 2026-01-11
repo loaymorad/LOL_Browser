@@ -4,14 +4,15 @@ LDFLAGS = -lssl -lcrypto
 
 SRCS = main.cpp \
        browser/controller.cpp \
-       network/dns.cpp \
-       network/http.cpp \
-       network/http_parser.cpp \
-       network/tcp_socket.cpp \
-       network/tls_socket.cpp \
-       network/url.cpp \
-       network/error_page.cpp \
-       network/connection_pool.cpp \
+       browser/error_page.cpp \
+       network/dns/dns.cpp \
+       network/sockets/socket.cpp \
+       network/http/http.cpp \
+       network/http/http_parser.cpp \
+       network/sockets/tcp_socket.cpp \
+       network/sockets/tls_socket.cpp \
+       network/http/url.cpp \
+       network/sockets/connection_pool.cpp \
        render/text_renderer.cpp \
        ui/cli.cpp
 

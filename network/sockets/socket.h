@@ -10,4 +10,7 @@ public:
     virtual int read(char* buffer, size_t size) = 0;
     virtual void close_socket() = 0;
     virtual bool is_connected() const = 0;
+
+protected:
+    int create_tcp_socket(const std::string& ip, int port);
 };

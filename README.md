@@ -62,13 +62,7 @@ g++ *.cpp -lssl -lcrypto
 ```
 
 # TODOs
-CheckList
-1. HTTP response parsing
-2. Multi-read receive loop
-3. Redirect handling
-4. HTML text parser
-5. Certificate validation
-6. Cache
+
 
 # --> Done
 ## 1. Proper HTTP Response Parsing [DONE]
@@ -81,7 +75,6 @@ Instead of crashing:
   TLS error page
   HTTP error page
 # <-- Done
-
 
 # --> Done
 ## 1. [TODO] Read Loop (Critical Bug) [DONE]
@@ -109,15 +102,16 @@ With Keep-Alive
 ```
 Connection: keep-alive
 ```
-
-
-
 # <-- Done
 
+
+
+# (1)
 # --> start
 refector and understand all code pieces
 # <-- end
 
+# (2)
 # --> start
 ## 3. [TODO] Certificate Validation
 You need:
@@ -126,7 +120,12 @@ You need:
   Match hostname
 # <-- end
 
+# (3)
+# --> start
+refector and understand all code pieces
+# <-- end
 
+# (4)
 # --> start
 ## 1. [TODO] Caching
 DNS cache
@@ -134,6 +133,12 @@ HTTP cache
 Respect Cache-Control
 # <-- end
 
+# (5)
+# --> start
+refector and understand all code pieces
+# <-- end
+
+# (6)
 # --> start
 ## 1. [TODO] Simple UI
 # <-- end
