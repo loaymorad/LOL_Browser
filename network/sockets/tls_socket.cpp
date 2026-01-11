@@ -12,6 +12,14 @@ TLSSocket::TLSSocket() : sockfd(-1), ctx(nullptr), ssl(nullptr) {
     OpenSSL_add_all_algorithms();
 
     ctx = SSL_CTX_new(TLS_client_method());
+
+    // Load system default CA store
+    if (!SSL_CTX_set_default_verify_paths(ctx)) {
+        ERR_print_errors_fp(stderr);
+    }
+
+    // Enable certificate verification
+    SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, nullptr);
 }
 
 TLSSocket::~TLSSocket() {
@@ -31,8 +39,11 @@ bool TLSSocket::connect(const string& ip, int port, const string& hostname) {
 
     ssl = SSL_new(ctx);
     SSL_set_fd(ssl, sockfd);
+    
     if (!hostname.empty()) {
         SSL_set_tlsext_host_name(ssl, hostname.c_str());
+        // Enable hostname verification
+        SSL_set1_host(ssl, hostname.c_str());
     }
 
     int result = SSL_connect(ssl);

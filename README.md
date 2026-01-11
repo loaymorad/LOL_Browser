@@ -104,54 +104,45 @@ Connection: keep-alive
 ```
 # <-- Done
 
-
-
-# (1)
-# --> start
-refector and understand all code pieces
-# <-- end
-
-# (2)
-# --> start
-## 3. [TODO] Certificate Validation
+# --> Done
+## 3. Certificate Validation [DONE]
 You need:
   Load CA store
   Verify certificate chain
   Match hostname
-# <-- end
 
-# (3)
-# --> start
-refector and understand all code pieces
-# <-- end
+test:
+Command: `./lol_browser https://expired.badssl.com`
+Result: Connection failed with an OpenSSL error: certificate verify failed.
+# <-- Done
 
-# (4)
+
 # --> start
 ## 1. [TODO] Caching
 DNS cache
 HTTP cache
-Respect Cache-Control
 # <-- end
 
-# (5)
 # --> start
 refector and understand all code pieces
 # <-- end
 
-# (6)
 # --> start
 ## 1. [TODO] Simple UI
 # <-- end
 
+# --> start (after launching the browser)
+## Respect Headers
+Respect Cache-Control
+CSP
+cookies
+Content-Type
 
 
-Recommended C++ Engines for Low-End Devices
-LiteHTML (Extreme Lightweight)
+## Render HTML
+Recommended C++ Engine: LiteHTML
+  A pure C++ HTML/CSS rendering engine with zero dependencies.
+  
+  Cons: No built-in JavaScript. You would need to pair it with a small JS engine like QuickJS or Duktape.
 
-    What it is: A pure C++ HTML/CSS rendering engine with zero dependencies. It doesn't even draw to the screen; it just tells you where things should be.
-
-    Pros: Tiny footprint, very fast.
-
-    Cons: No built-in JavaScript. You would need to pair it with a small JS engine like QuickJS or Duktape.
-
-    Networking: You have 100% manual control. It only knows about data you give it.
+# <-- end
