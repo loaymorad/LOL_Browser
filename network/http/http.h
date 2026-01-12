@@ -4,6 +4,10 @@
 #include "../sockets/connection_pool.h"
 #include <string>
 #include <unordered_map>
+#include <memory>
+
+// Forward declaration
+class HTTPCache;
 
 enum class NetworkError {
     NONE,
@@ -25,10 +29,12 @@ struct HttpResponse {
 class HTTPClient {
 public:
     HTTPClient(ConnectionPool& pool);
+    ~HTTPClient();
     HttpResponse get(const URL& url, const std::string& ip);
 
 private:
     ConnectionPool& pool;
+    std::unique_ptr<HTTPCache> cache_;
     void send_request(Socket* socket, const URL& url);
     HttpResponse read_response_head(Socket* socket);
     std::string read_body(Socket* socket, const std::unordered_map<std::string, std::string>& headers, const std::string& initial_body_part);

@@ -63,6 +63,7 @@ public:
     std::string host() const;
     std::string path() const;
     int port() const;
+    std::string to_string() const;
 
 private:
 

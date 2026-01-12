@@ -1,4 +1,5 @@
 #include "http.h"
+#include "http_cache.h"
 #include "http_parser.h"
 #include "../sockets/tcp_socket.h"
 #include "../sockets/tls_socket.h"
@@ -7,9 +8,19 @@
 
 using namespace std;
 
-HTTPClient::HTTPClient(ConnectionPool& pool) : pool(pool) {}
+HTTPClient::HTTPClient(ConnectionPool& pool) : pool(pool), cache_(std::make_unique<HTTPCache>()) {}
+
+HTTPClient::~HTTPClient() = default;
 
 HttpResponse HTTPClient::get(const URL& url, const string& ip) {
+    // Check cache first
+    string cache_key = url.to_string();
+    HttpResponse* cached = cache_->get(cache_key);
+    if (cached != nullptr) {
+        return *cached;
+    }
+
+    // Cache miss - proceed with normal request
     unique_ptr<Socket> socket = pool.get_connection(url.host(), url.port());
     bool reused = (socket != nullptr);
 
@@ -60,6 +71,11 @@ HttpResponse HTTPClient::get(const URL& url, const string& ip) {
         pool.return_connection(url.host(), url.port(), move(socket));
     } else {
         socket->close_socket();
+    }
+
+    // Store in cache if successful
+    if (response.error == NetworkError::NONE && response.status == 200) {
+        cache_->put(cache_key, response);
     }
 
     return response;

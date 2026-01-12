@@ -70,3 +70,7 @@ int URL::port() const {
     return port_;
 }
 
+std::string URL::to_string() const {
+    return scheme_ + "://" + host_ + ":" + std::to_string(port_) + path_;
+}
+

@@ -6,8 +6,10 @@ SRCS = main.cpp \
        browser/controller.cpp \
        browser/error_page.cpp \
        network/dns/dns.cpp \
+       network/dns/dns_cache.cpp \
        network/sockets/socket.cpp \
        network/http/http.cpp \
+       network/http/http_cache.cpp \
        network/http/http_parser.cpp \
        network/sockets/tcp_socket.cpp \
        network/sockets/tls_socket.cpp \

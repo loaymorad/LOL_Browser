@@ -10,6 +10,14 @@ string DNSResolver::resolve(const string& hostname) {
         return "";
     }
 
+    // Check cache first
+    string cached_ip = cache_.get(hostname);
+    if (!cached_ip.empty()) {
+        return cached_ip;
+    }
+
+    // Cache miss - perform DNS resolution
+
     addrinfo hints{}, *res;
     hints.ai_family = AF_INET;
 
@@ -23,5 +31,9 @@ string DNSResolver::resolve(const string& hostname) {
     inet_ntop(AF_INET, &addr->sin_addr, ip, sizeof(ip));
 
     freeaddrinfo(res);
+    
+    // Store in cache
+    cache_.put(hostname, ip);
+    
     return ip;
 }

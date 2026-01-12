@@ -117,11 +117,17 @@ Result: Connection failed with an OpenSSL error: certificate verify failed.
 # <-- Done
 
 
-# --> start
-## 1. [TODO] Caching
+# --> Done
+## 1. Caching [DONE]
 DNS cache
 HTTP cache
-# <-- end
+
+Cache Expiration Strategy: The DNS cache will use a fixed TTL of 300 seconds (5 minutes) since we don't parse TTL from DNS responses. The HTTP cache will respect Cache-Control headers when present, with a default TTL of 60 seconds for responses without explicit caching directives.
+
+Cache Storage: Both caches will be in-memory only (no disk persistence). Caches will be cleared when the browser process exits.
+
+Thread Safety: The current implementation is single-threaded. If you plan to add multi-threading in the future, the cache implementations will need mutex protection.
+# <-- Done
 
 # --> start
 refector and understand all code pieces
@@ -131,7 +137,11 @@ refector and understand all code pieces
 ## 1. [TODO] Simple UI
 # <-- end
 
-# --> start (after launching the browser)
+# --> Plan for the youtube video
+
+# TODOs (after launching the browser)
+
+# --> start 
 ## Respect Headers
 Respect Cache-Control
 CSP
