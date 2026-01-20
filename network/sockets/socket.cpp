@@ -3,7 +3,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-int Socket::create_tcp_socket(const std::string& ip, int port) {
+int Socket::establish_tcp_connection(const std::string& ip, int port) {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) return -1;
 

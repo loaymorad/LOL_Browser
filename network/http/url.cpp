@@ -1,34 +1,12 @@
 #include "url.h"
 using namespace std;
 
-/*
-What does : raw_(raw) means in URL::URL(const string& raw) : raw_(raw){}
-This is called a member initializer list.
-
-It's used to initialize member variables before the constructor body runs.
-
-*/
 
 URL::URL(const string& raw) : raw_(raw) {
     parse();
 }
 
 
-/*
-raw is the url string
-
-
-What is `npos` ?
-npos is a static constant defined inside std::string.  A special value meaning “not found”
-
-what parse() function do ?
-input: http://example.com/docs
-output: 
-    scheme: http
-    host: example.com
-    path: /docs
-    port: 80
-*/
 void URL::parse() {
     scheme_ = "http";
     port_ = 80;

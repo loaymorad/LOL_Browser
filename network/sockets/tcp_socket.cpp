@@ -11,10 +11,10 @@ TCPSocket::~TCPSocket() {
     close_socket();
 }
 
-bool TCPSocket::connect(const string& ip, int port) {
+bool TCPSocket::connect(const string& ip, int port, const string& hostname) {
     if (sockfd != -1) close_socket();
 
-    sockfd = create_tcp_socket(ip, port);
+    sockfd = establish_tcp_connection(ip, port);
     return sockfd != -1;
 }
 

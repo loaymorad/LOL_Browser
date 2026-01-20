@@ -1,158 +1,78 @@
-current version
-```vbnet
-main
- ↓
-CLI → get_url
- ↓
-BrowserController::navigate
- ↓
-URL parse
- ↓
-DNS resolve
- ↓
-TCP connect
- ↓
-HTTP GET
- ↓
-Response
- ↓
-Text render
-```
+# LOL Browser
+![Logo](./logo/logo_nobg.png)
 
+A custom-built web browser implementation in C++ featuring a handcrafted networking stack and a Qt-based user interface.
 
-```
-g++ -std=c++17 main.cpp ui/cli.cpp browser/controller.cpp network/url.cpp network/dns.cpp network/tcp_socket.cpp network/http.cpp render/text_renderer.cpp -o browser
-```
+## Overview
+![overview](./logo/image.png)
 
-# Add HTTPS with OpenSSL
-HTTPS is NOT a new protocol.
-```
-HTTP
-↓
-TLS (encryption)
-↓
-TCP
-↓
-IP
-```
-What’s missing for HTTPS is ONLY ONE THING: A TLS layer that sits on top of your existing TCP socket
-So your stack becomes:
-```
-HTTPClient
-  ↓
-TLSSocket (NEW)
-  ↓
-TCPSocket
-  ↓
-TCP
-```
+LOL Browser is an educational project designed to understand the core components of a web browser. Instead of relying on high-level networking libraries, it implements fundamental protocols from scratch, including DNS resolution, TCP/TLS sockets, and HTTP/HTTPS parsing.
 
-HTTP will say:
-    If scheme == https → use TLSSocket
-    Else → use TCPSocket
+## Features
 
+-   **Custom Networking Stack**:
+    -   **DNS Resolution**: Manual DNS queries using OS APIs (`getaddrinfo`) with a local caching layer.
+    -   **TCP & TLS Sockets**: Raw socket implementation for HTTP and OpenSSL integration for HTTPS.
+    -   **Connection Pooling**: Efficient management of persistent connections (Keep-Alive).
+    -   **HTTP/1.1 Support**: Custom HTTP parser handling headers, chunked transfer encoding, and response codes.
+-   **Caching System**:
+    -   **DNS Cache**: In-memory caching of IP addresses to reduce lookup latency.
+    -   **HTTP Cache**: Compliance with `Cache-Control` headers for efficient resource retrieval.
+-   **User Interface**:
+    -   Built with **Qt** for a responsive and cross-platform GUI.
+    -   Simple navigation bar and content display area.
+
+## Project Structure
 
 ```
-sudo apt install libssl-dev
+LOL_Browser/
+├── browser/            # Browser logic and controller
+├── network/            # Networking stack
+│   ├── dns/            # DNS resolution and caching
+│   ├── http/           # HTTP client, parser, and cache
+│   └── sockets/        # TCP, TLS, and connection pooling
+├── render/             # Basic text rendering logic
+├── ui/                 # Qt-based user interface
+├── main.cpp            # Application entry point
+├── lol_browser.pro     # QMake project file
+└── Makefile            # Generated build file
 ```
 
-compile
-```
-g++ *.cpp -lssl -lcrypto
-```
+## Prerequisites
 
-# TODOs
+Ensure you have the following installed on your system:
 
+-   **C++ Compiler**: GCC or Clang supporting C++17.
+-   **Qt 5**: Development libraries (`qt5-default`, `libqt5widgets5`, etc.).
+-   **OpenSSL**: Development libraries (`libssl-dev`).
 
-# --> Done
-## 1. Proper HTTP Response Parsing [DONE]
+## Build Instructions
 
-## 2. Handle Redirects (3xx) [DONE]
+1.  **Clone the repository**:
+    ```bash
+    git clone <repository-url>
+    cd LOL_Browser
+    ```
 
-## 3. Error Pages [DONE]
-Instead of crashing:
-  DNS error page
-  TLS error page
-  HTTP error page
-# <-- Done
+2.  **Generate the Makefile**:
+    ```bash
+    qmake lol_browser.pro
+    ```
 
-# --> Done
-## 1. [TODO] Read Loop (Critical Bug) [DONE]
-You only call recv() / SSL_read() once.
-Real servers:
-Send data in chunks
-Large HTML = many reads
+3.  **Compile the project**:
+    ```bash
+    make
+    ```
 
-Real servers:
-  Stream data
-  Split responses across many TCP packets
-  Use chunked transfer encoding
-  Close connection only after full response
+## Usage
 
-Read until the server closes the connection OR no more data is available
-```
-Connection: close
+After a successful build, run the browser:
+
+```bash
+./lol_browser_gui
 ```
 
-## 2. [TODO] HTTP Keep-Alive [DONE]
-Reuse TCP/TLS connections:
-Connection: keep-alive
+1.  Enter a URL (e.g., `https://google.com` or `http://example.com`) in the address bar.
+2.  Press **Go**.
+3.  The response body will be displayed in the main text area.
 
-With Keep-Alive
-```
-Connection: keep-alive
-```
-# <-- Done
-
-# --> Done
-## 3. Certificate Validation [DONE]
-You need:
-  Load CA store
-  Verify certificate chain
-  Match hostname
-
-test:
-Command: `./lol_browser https://expired.badssl.com`
-Result: Connection failed with an OpenSSL error: certificate verify failed.
-# <-- Done
-
-
-# --> Done
-## 1. Caching [DONE]
-DNS cache
-HTTP cache
-
-Cache Expiration Strategy: The DNS cache will use a fixed TTL of 300 seconds (5 minutes) since we don't parse TTL from DNS responses. The HTTP cache will respect Cache-Control headers when present, with a default TTL of 60 seconds for responses without explicit caching directives.
-
-Cache Storage: Both caches will be in-memory only (no disk persistence). Caches will be cleared when the browser process exits.
-
-Thread Safety: The current implementation is single-threaded. If you plan to add multi-threading in the future, the cache implementations will need mutex protection.
-# <-- Done
-
-# --> start
-refector and understand all code pieces
-# <-- end
-
-# --> start
-## 1. [TODO] Simple UI
-# <-- end
-
-# --> Plan for the youtube video
-
-# TODOs (after launching the browser)
-
-# --> start 
-## Respect Headers
-Respect Cache-Control
-CSP
-cookies
-Content-Type
-
-
-## Render HTML
-Recommended C++ Engine: LiteHTML
-  A pure C++ HTML/CSS rendering engine with zero dependencies.
-  
-  Cons: No built-in JavaScript. You would need to pair it with a small JS engine like QuickJS or Duktape.
-
-# <-- end

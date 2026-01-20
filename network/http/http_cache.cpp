@@ -1,6 +1,5 @@
 #include "http_cache.h"
 #include "http.h"
-#include <iostream>
 #include <sstream>
 #include <algorithm>
 
@@ -39,9 +38,6 @@ void HTTPCache::put(const string& url, const HttpResponse& response) {
     cache_[url] = entry;
 }
 
-void HTTPCache::clear() {
-    cache_.clear();
-}
 
 bool HTTPCache::is_expired(const CachedResponse& entry) const {
     auto now = chrono::steady_clock::now();

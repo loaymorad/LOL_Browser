@@ -18,8 +18,6 @@ public:
     // Stores a DNS resolution with current timestamp
     void put(const std::string& hostname, const std::string& ip);
     
-    // Clears all cached entries
-    void clear();
 
 private:
     int ttl_seconds_;

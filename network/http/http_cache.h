@@ -20,8 +20,6 @@ public:
     // Stores a response with caching headers
     void put(const std::string& url, const HttpResponse& response);
     
-    // Clears all cached entries
-    void clear();
 
 private:
     int default_ttl_seconds_;

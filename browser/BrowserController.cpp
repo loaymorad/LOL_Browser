@@ -1,26 +1,11 @@
-#include "controller.h"
+#include "BrowserController.h"
 #include "../network/http/url.h"
 #include "../network/dns/dns.h"
 #include "../network/http/http.h"
 #include "../render/text_renderer.h"
 #include "error_page.h"
-#include <iostream>
 
 using namespace std;
-//  > Entry Point <
-
-/*
-input: http://www.vulnweb.com
-> `URL url(raw_url);`
-    url
-        scheme: http
-        host: www.vulnweb.com
-        path: /
-        port: 80
-
-> `DNSResolver dns; dns.resolve("www.vulnweb.com");`
-
-*/
 
 constexpr int MAX_REDIRECTS = 5;
 
@@ -28,6 +13,11 @@ BrowserController::BrowserController() : http(pool) {}
 
 void BrowserController::navigate(string& raw_url) {
     TextRenderer renderer;
+    string result = fetch(raw_url);
+    renderer.render(result);
+}
+
+string BrowserController::fetch(string& raw_url) {
     string current_url = raw_url;
     
     for(int i = 0; i < MAX_REDIRECTS; i++) {
@@ -36,15 +26,13 @@ void BrowserController::navigate(string& raw_url) {
         
         string ip = dns.resolve(url.host());
         if (ip.empty()) {
-            renderer.render(ErrorPage::dns_error(url.host()));
-            return;
+            return ErrorPage::dns_error(url.host());
         }
 
         HttpResponse response = http.get(url, ip);
 
         if(response.error == NetworkError::TLS){
-            renderer.render(ErrorPage::tls_error());
-            return;
+            return ErrorPage::tls_error();
         }
 
         // Handle Redirects
@@ -58,8 +46,7 @@ void BrowserController::navigate(string& raw_url) {
 
         // Handle HTTP Errors
         if (response.error != NetworkError::NONE || response.status >= 400) {
-            renderer.render(ErrorPage::http_error(response.status));
-            return;
+            return ErrorPage::http_error(response.status);
         }
 
         // Success
@@ -68,9 +55,8 @@ void BrowserController::navigate(string& raw_url) {
             output += key + ": " + val + "\n";
         }
         output += "\n" + response.body;
-        renderer.render(output);
-        return;
+        return output;
     }
 
-    renderer.render("Too many redirects");
+    return "Too many redirects";
 }

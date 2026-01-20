@@ -1,15 +1,10 @@
-#include "ui/cli.h"
-#include "browser/controller.h"
+#include <QApplication>
+#include "ui/qt/mainwindow.h"
 
-using namespace std;
-
-int main(int argc, char *argv[]) {
-    CLI cli;
-    BrowserController browser;
-
-    string url = cli.get_url(argc, argv);
-
-    browser.navigate(url);
-
-    return 0;
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    MainWindow window;
+    window.show();
+    return app.exec();
 }

@@ -8,8 +8,7 @@ public:
     TLSSocket();
     ~TLSSocket() override;
 
-    bool connect(const std::string& ip, int port) override;
-    bool connect(const std::string& ip, int port, const std::string& hostname);
+    bool connect(const std::string& ip, int port, const std::string& hostname = "") override;
     void send(const std::string& data) override;
     int read(char* buffer, size_t size) override;
     void close_socket() override;

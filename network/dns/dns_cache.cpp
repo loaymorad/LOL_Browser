@@ -1,5 +1,4 @@
 #include "dns_cache.h"
-#include <iostream>
 
 using namespace std;
 
@@ -35,9 +34,6 @@ void DNSCache::put(const string& hostname, const string& ip) {
     cache_[hostname] = entry;
 }
 
-void DNSCache::clear() {
-    cache_.clear();
-}
 
 bool DNSCache::is_expired(const DNSCacheEntry& entry) const {
     auto now = chrono::steady_clock::now();

@@ -3,7 +3,6 @@
 #include "http_parser.h"
 #include "../sockets/tcp_socket.h"
 #include "../sockets/tls_socket.h"
-#include <iostream>
 #include <sstream>
 
 using namespace std;
@@ -25,12 +24,15 @@ HttpResponse HTTPClient::get(const URL& url, const string& ip) {
     bool reused = (socket != nullptr);
 
     auto connect_socket = [&]() -> unique_ptr<Socket> {
+        unique_ptr<Socket> socket;
         if (url.scheme() == "https") {
-            auto tls_socket = make_unique<TLSSocket>();
-            if (tls_socket->connect(ip, url.port(), url.host())) return tls_socket;
+            socket = make_unique<TLSSocket>();
         } else {
-            auto tcp_socket = make_unique<TCPSocket>();
-            if (tcp_socket->connect(ip, url.port())) return tcp_socket;
+            socket = make_unique<TCPSocket>();
+        }
+
+        if (socket->connect(ip, url.port(), url.host())) {
+            return socket;
         }
         return nullptr;
     };

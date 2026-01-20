@@ -27,14 +27,11 @@ TLSSocket::~TLSSocket() {
    if(ctx) SSL_CTX_free(ctx);
 }
 
-bool TLSSocket::connect(const string& ip, int port) {
-    return connect(ip, port, "");
-}
 
 bool TLSSocket::connect(const string& ip, int port, const string& hostname) {
     if (sockfd != -1) close_socket();
 
-    sockfd = create_tcp_socket(ip, port);
+    sockfd = establish_tcp_connection(ip, port);
     if (sockfd == -1) return false;
 
     ssl = SSL_new(ctx);

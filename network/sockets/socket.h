@@ -4,7 +4,7 @@
 class Socket {
 public:
     virtual ~Socket() = default;
-    virtual bool connect(const std::string& ip, int port) = 0;
+    virtual bool connect(const std::string& ip, int port, const std::string& hostname = "") = 0;
     virtual void send(const std::string& data) = 0;
     // Reads up to size bytes into buffer. Returns number of bytes read.
     virtual int read(char* buffer, size_t size) = 0;
@@ -12,5 +12,5 @@ public:
     virtual bool is_connected() const = 0;
 
 protected:
-    int create_tcp_socket(const std::string& ip, int port);
+    int establish_tcp_connection(const std::string& ip, int port);
 };
