@@ -1,5 +1,5 @@
 # LOL Browser
-.                       ![Logo](./logo/logo_nobg.png)
+.                       .![Logo](./logo/logo_nobg.png)
 
 A custom-built web browser implementation in C++ featuring a handcrafted networking stack and a Qt-based user interface.
 
